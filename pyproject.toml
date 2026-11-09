@@ -19,6 +19,9 @@ classifiers = [
 ]
 dependencies = []
 
+[project.scripts]
+rate-limit-planner = "rate_limit_planner.__main__:main"
+
 [project.urls]
 Homepage = "https://github.com/Trysac/u204-rate-limit-planner"
 Source = "https://github.com/Trysac/u204-rate-limit-planner"

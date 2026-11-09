@@ -2,28 +2,27 @@
 
 ## Purpose
 
-`trysac-rate-limit-planner` is a small, dependency-free Python library: Plan safe request concurrency and pacing for LLM providers from their RPM and TPM limits, average token use and latency
+`trysac-rate-limit-planner` is a stdlib-only Python library that computes a `Plan` from provider limits and an average request profile. It plans numbers; it does not enforce limits.
 
 ## Shape
 
 ```text
-caller code --> rate_limit_planner (public API in __init__.py)
+caller code --> rate_limit_planner.__init__ (public API)
                     |
-                    +-- pure functions, no I/O, no global state
+                    +-- plan() / plan_many() / explain()
+                    |
+                    +-- rate_limit_planner.__main__ (argument parsing and CLI output)
 ```
 
-- **Public API**: the names listed in `__all__` of `src/rate_limit_planner/__init__.py`. Anything else is
-  internal and may change without a major version.
-- **Errors**: invalid input raises built-in exceptions (`ValueError`, `TypeError`) with a clear
-  message; the library never prints or exits.
-- **Side effects**: none. If a feature needs I/O, isolate it in its own module behind a small
-  interface and record the choice in an ADR.
+- **Public API**: `Limits`, `Plan`, `PlannerError`, `Profile`, `explain`, `plan`, and `plan_many`; these names are in `__all__`.
+- **Errors**: invalid input raises `PlannerError` with `code` set to `invalid_limits`, `invalid_profile`, `invalid_safety`, or `request_too_large`. The library does not raise `ValueError` or `TypeError` for these validations.
+- **Side effects**: none in the library. It does not perform network or filesystem I/O, configure logging, print, or exit. The CLI handles printing and exit codes.
+- **Dependencies**: Python standard library only. The package includes `py.typed`.
 
 ## Quality contract
 
-`scripts/check.py` is the single definition of the gates; `fabrica.json` tells the factory and CI
-how to run it. See [TESTING.md](TESTING.md).
+The code in `src/rate_limit_planner` is covered by `tests/test_rate_limit_planner.py`, which checks the public API, validation codes, CLI return codes, and stdout/stderr behavior. No separate quality-gate script is present in the provided repository files.
 
 ## Decisions
 
-Architecture decisions are recorded in [decisions/](decisions/) as numbered ADRs.
+No architecture decision records are included in the provided repository files.
