@@ -9,4 +9,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Added `rate_limit_planner` with `plan`, `plan_many`, `explain`, dataclasses `Limits`, `Profile`, `Plan`, and a CLI.
 - Initial project structure from the factory utility template.

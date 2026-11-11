@@ -2,28 +2,20 @@
 
 ## Running
 
-```sh
-uv run pytest --cov=rate_limit_planner   # tests with coverage report
-uv run python scripts/check.py      # every gate, as CI and the factory run it
+Run the test module with pytest:
+
+```bash
+pytest tests/test_rate_limit_planner.py
 ```
 
 ## Policy
 
-- Branch coverage of `src/rate_limit_planner` must stay at or above 80 %; the gate fails below it.
-- Tests exercise the public API (`import rate_limit_planner`) and assert every observable effect:
-  return values, raised exceptions and their messages.
-- Each bug fix starts with a failing test that reproduces it.
-- Tests are deterministic: no network, no wall clock, no dependence on test order.
+`tests/test_rate_limit_planner.py` imports the public API `from rate_limit_planner import Limits, Plan, PlannerError, Profile, explain, plan, plan_many` and `main` from `rate_limit_planner.__main__`. Tests assert returned `Plan` values, `PlannerError.code` values, JSON output, stdout/stderr, and CLI return codes. They do not use network access or wall-clock timing.
 
 ## Tiers
 
-- Local tier (every gate run, coverage measured here): unit and property tests, plus conformance on small
-  fixtures kept in the repository.
-- CI tier: conformance that needs an external tool or a download. Mark them `@pytest.mark.conformance`; `scripts/check.py` deselects them locally
-  (unless `FABRICA_CI=1`). The CI `conformance` job sets `FABRICA_CI=1` and runs the full suite. Tools are installed
-  by the optional `ci/conformance-setup.sh` (bash, CI only; verify every download against a pinned SHA-256), and
-  tagged tests skip cleanly when their tool is missing.
+There is one test module in the provided repository. There are no separate conformance or CI-only test tiers, and no `conftest.py` is present.
 
 ## Layout
 
-`tests/test_<module>.py` mirrors each public module. Shared fixtures go in `tests/conftest.py`.
+- `tests/test_rate_limit_planner.py`: all tests for the library and CLI.
